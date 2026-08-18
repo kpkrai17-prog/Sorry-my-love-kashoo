@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>For Kashoo — I'm Sorry</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ====== Theme & Layout ====== */
+    :root{
+      --bg:#0b0202;
+      --card:#120406;
+      --accent:#ff6b8a;
+      --accent-2:#ff2d6f;
+      --muted:#cfc6c8;
+      --soft:#fbe9ef;
+      --glass: rgba(255,255,255,0.04);
+      --max-width:980px;
+    }
+    html,body{height:100%;margin:0;background:radial-gradient(ellipse at top left,#14030a 0%, #070203 30%, var(--bg) 100%);font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:var(--soft);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+    }
+    .stage{
+      width:100%;
+      max-width:var(--max-width);
+      border-radius:14px;
+      overflow:hidden;
+      position:relative;
+      box-shadow: 0 20px 60px rgba(6,3,6,0.65), inset 0 1px 0 rgba(255,255,255,0.02);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    }
+
+    /* Particle canvas covers stage */
+    #particles{
+      position:absolute;inset:0;pointer-events:none;z-index:1;
+    }
+
+    /* Main panels */
+    .panel{
+      padding:46px 40px;
+      min-height:520px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      gap:18px;
+      position:relative;
+      z-index:2;
+    }
+
+    h1.title{
+      font-family: 'Playfair Display', serif;
+      color:var(--soft);
+      font-weight:700;
+      font-size:2.0rem;
+      margin:0;
+      letter-spacing:0.01em;
+      text-shadow: 0 6px 28px rgba(255,107,138,0.07);
+    }
+    .lead{
+      font-size:1.05rem;
+      color:var(--muted);
+      max-width:900px;
+      line-height:1.58;
+      margin:0;
+    }
+
+    /* Soft glowing hearts background */
+    .hearts-bg{
+      position:absolute;inset:0;z-index:0;pointer-events:none;
+      background-image:
+        radial-gradient(circle at 12% 22%, rgba(255,107,138,0.06) 0 8%, transparent 30%),
+        radial-gradient(circle at 82% 28%, rgba(255,45,111,0.04) 0 10%, transparent 30%),
+        radial-gradient(circle at 55% 78%, rgba(255,182,193,0.02) 0 10%, transparent 30%);
+      filter:blur(18px);
+    }
+
+    /* Initial screen */
+    .intro .headline{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--soft);margin:0}
+    .intro .sub{color:var(--muted);margin-top:6px}
+
+    .btn {
+      appearance:none;border:0;padding:12px 18px;border-radius:12px;cursor:pointer;font-weight:600;
+      display:inline-flex;gap:10px;align-items:center;justify-content:center;
+      box-shadow: 0 8px 26px rgba(0,0,0,0.45);
+      transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+      user-select:none;
+    }
+    .btn:active{transform:translateY(1px) scale(.998)}
+    .btn-heart{
+      background:linear-gradient(180deg,var(--accent),var(--accent-2));
+      color:white;padding:14px 20px;font-size:1.02rem;
+      text-shadow: 0 4px 20px rgba(255,45,111,0.18);
+      box-shadow: 0 10px 30px rgba(255,107,138,0.08), 0 2px 0 rgba(0,0,0,0.2) inset;
+    }
+
+    .muted-btn{
+      background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:9px 12px;border-radius:10px;
+    }
+
+    /* Transition panels */
+    .hidden{opacity:0;transform:translateY(8px) scale(.996);pointer-events:none}
+    .visible{opacity:1;transform:none;pointer-events:auto;transition:all .7s cubic-bezier(.16,.9,.3,1)}
+
+    /* Apology area */
+    .apology h2{font-family:'Playfair Display',serif;font-size:1.75rem;margin:0;color:var(--accent);}
+    .apology .message{
+      margin-top:6px;font-size:1rem;color:#f7e8ec;max-width:860px;line-height:1.6;
+      text-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    }
+
+    .typewriter{
+      font-family: Inter, sans-serif;
+      font-size:1rem;
+      color:#fff;
+      margin-top:12px;
+      min-height:94px; /* keep space */
+      white-space:pre-wrap;
+      text-align:left;
+      max-width:740px;
+    }
+
+    /* Animated cards stack */
+    .cards{
+      display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px;
+      max-width:820px;
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      padding:14px 18px;border-radius:12px;min-width:160px;max-width:260px;
+      box-shadow:0 8px 30px rgba(2,1,1,0.45);
+      text-align:left;color:var(--soft);transform:translateY(18px) scale(.98);opacity:0;
+    }
+    .card.show{animation:cardIn .6s forwards cubic-bezier(.2,.9,.25,1)}
+    @keyframes cardIn{to{opacity:1;transform:none}}
+
+    .card .emoji{font-size:1.3rem;margin-right:10px}
+    .card p{margin:0;color:#fff;font-weight:600}
+
+    /* Big heart button and floating hearts */
+    .big-heart-btn{
+      margin-top:20px;background:transparent;border:2px solid rgba(255,255,255,0.06);padding:14px 22px;border-radius:18px;
+      color:var(--accent);display:inline-flex;align-items:center;gap:12px;font-weight:700;font-size:1.02rem;
+      backdrop-filter: blur(6px);
+    }
+
+    /* floating heart particle container */
+    .float-layer{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden}
+
+    /* envelope/letter */
+    .envelope{
+      margin-top:28px;width:220px;height:140px;position:relative;perspective:800px;
+    }
+    .env-body{
+      width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.2,.9,.3,1);
+    }
+    .env-front, .env-back{
+      position:absolute;inset:0;border-radius:10px;background:linear-gradient(180deg,#1a0507,#26040a);box-shadow:0 8px 30px rgba(0,0,0,0.6);
+    }
+    .env-flap{
+      position:absolute;left:0;right:0;top:0;height:55%;
+      background:linear-gradient(180deg,#fff4f4, #ffdfe7);
+      border-bottom-left-radius:12px;border-bottom-right-radius:12px;
+      transform-origin:center top;transform:rotateX(0deg);
+      box-shadow:0 6px 30px rgba(0,0,0,0.22);
+      transition:transform .8s cubic-bezier(.2,.9,.3,1);
+    }
+    .env-open .env-flap{transform:rotateX(-180deg);}
+
+    .letter{
+      position:absolute;left:8%;right:8%;top:16%;bottom:10%;background:linear-gradient(180deg,#fff9fb,#fff1f4);border-radius:6px;padding:14px;color:#3b1b24;opacity:0;transform:translateY(8px) scale(.995);transition:all .6s .25s cubic-bezier(.2,.9,.3,1);
+    }
+    .env-open .letter{opacity:1;transform:none}
+
+    /* Final decision area */
+    .final{
+      margin-top:20px;display:flex;gap:14px;justify-content:center;align-items:center;
+    }
+    .btn-yes{background:linear-gradient(180deg,#ff9db3,#ff6b8a);color:white;padding:10px 16px;border-radius:12px;border:0}
+    .btn-wait{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:10px 14px;border-radius:12px}
+
+    /* result screens */
+    .result{
+      margin-top:20px;font-size:1.02rem;color:#fff;max-width:720px;
+    }
+
+    /* footer */
+    .footer{
+      margin-top:30px;padding:18px 28px;border-top:1px solid rgba(255,255,255,0.02);
+      color:var(--muted);font-size:.92rem;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+    }
+
+    /* music control */
+    .music{
+      position:absolute;top:20px;right:20px;z-index:6;display:flex;align-items:center;gap:10px;
+      background:rgba(0,0,0,0.25);backdrop-filter:blur(6px);padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);
+    }
+    .music button{background:transparent;border:0;color:var(--soft);cursor:pointer;font-weight:600}
+
+    /* responsive */
+    @media (max-width:720px){
+      .panel{padding:28px 20px;min-height:640px}
+      .typewriter{min-height:120px}
+      .envelope{width:180px;height:120px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="stage" role="main" aria-label="A personal apology for Kashoo">
+      <canvas id="particles"></canvas>
+      <div class="hearts-bg" aria-hidden="true"></div>
+
+      <!-- Music control -->
+      <div class="music" aria-hidden="false">
+        <button id="musicToggle" aria-pressed="false">🔈 Play music</button>
+        <button id="muteBtn" title="Mute/unmute" style="display:none"></button>
+      </div>
+
+      <div class="panel intro visible" id="introPanel">
+        <h1 class="headline">Kashoo… I need to tell you something <span aria-hidden="true">❤️</span></h1>
+        <p class="sub lead">I made this for you because words felt small until I turned them into something I could show. Please open my heart.</p>
+        <div style="margin-top:22px">
+          <button id="openHeart" class="btn btn-heart" aria-label="Open my heart button">Open My Heart <span style="font-size:1.05rem">💌</span></button>
+        </div>
+      </div>
+
+      <!-- Apology panel (hidden initially) -->
+      <div class="panel apology hidden" id="apologyPanel" aria-hidden="true">
+        <h2 class="title">I’m Sorry, Kashoo <span aria-hidden="true">❤️</span></h2>
+        <div class="message lead" style="max-width:820px;text-align:left">
+          <div id="typedText" class="typewriter" aria-live="polite"></div>
+        </div>
+
+        <div style="margin-top:14px">
+          <button id="moreThing" class="btn muted-btn">One More Thing… <span style="font-size:1.05rem">💗</span></button>
+        </div>
+
+        <div class="cards" id="cardsContainer" aria-hidden="true"></div>
+
+        <div style="margin-top:10px">
+          <button id="hearHeart" class="big-heart-btn" aria-label="Press to hear my heart">Press this if you’re ready to hear my heart <span style="font-size:1.2rem">❤️</span></button>
+        </div>
+
+        <div class="envelope" aria-hidden="true" id="envelopeWrap">
+          <div class="env-body" id="envBody">
+            <div class="env-front env-flap" aria-hidden="true"></div>
+            <div class="env-back"></div>
+            <div class="letter" id="letterText">
+              <p style="margin:0 0 8px;font-weight:700">Kashoo, will you forgive me? 🥺❤️</p>
+              <div class="final" id="finalBtns">
+                <button id="btnYes" class="btn-yes">Yes ❤️</button>
+                <button id="btnTime" class="btn-wait">I need some time 🥺</button>
+              </div>
+              <div id="resultArea" style="margin-top:14px"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="result" id="resultMessage" aria-hidden="true"></div>
+
+        <div class="footer">Made with a sorry heart, just for Kashoo. <span style="margin-left:6px">❤️</span></div>
+      </div>
+
+      <!-- floating hearts layer -->
+      <div class="float-layer" id="floatLayer" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <!-- Audio: replace the src with your song file (song.mp3) in the same folder -->
+  <audio id="bgAudio" src="song.mp3" preload="none" loop></audio>
+
+  <script>
+    // ====== Utilities & State ======
+    const openHeart = document.getElementById('openHeart');
+    const introPanel = document.getElementById('introPanel');
+    const apologyPanel = document.getElementById('apologyPanel');
+    const typedText = document.getElementById('typedText');
+    const moreThing = document.getElementById('moreThing');
+    const cardsContainer = document.getElementById('cardsContainer');
+    const hearHeart = document.getElementById('hearHeart');
+    const floatLayer = document.getElementById('floatLayer');
+    const envBody = document.getElementById('envBody');
+    const envelopeWrap = document.getElementById('envelopeWrap');
+    const letterText = document.getElementById('letterText');
+    const btnYes = document.getElementById('btnYes');
+    const btnTime = document.getElementById('btnTime');
+    const resultArea = document.getElementById('resultArea');
+    const resultMessage = document.getElementById('resultMessage');
+    const bgAudio = document.getElementById('bgAudio');
+    const musicToggle = document.getElementById('musicToggle');
+
+    // Sincere apology message (typewriter)
+    const apology = [
+      "Kashoo, I know I hurt you, and I’m truly sorry. I never wanted my words or actions to become the reason for your tears or sadness.",
+      "You mean so much to me, and knowing that I hurt the person I love is something I deeply regret.",
+      "I’m not here to make excuses. I just want you to know that I realize my mistake, I’m sorry from my heart, and I want to make things right.",
+      "You are incredibly special to me, Kashoo. ❤️"
+    ].join("\\n\\n");
+
+    // Cards to show
+    const notes = [
+      {e:"💗", t:"You matter to me."},
+      {e:"🌙", t:"I hate knowing I made you sad."},
+      {e:"🥺", t:"I wish I could take back the moment I hurt you."},
+      {e:"❤️", t:"I don’t want one mistake to define us."},
+      {e:"🫶", t:"I want to learn, improve, and love you better."}
+    ];
+
+    // ====== Small helpers ======
+    function fadeInIntroOut() {
+      introPanel.classList.add('hidden');
+      setTimeout(()=> introPanel.classList.remove('visible'), 30);
+      apologyPanel.classList.remove('hidden');
+      apologyPanel.classList.add('visible');
+      apologyPanel.setAttribute('aria-hidden','false');
+    }
+
+    function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+    // Typewriter
+    async function typeWriter(text, el, speed=22){
+      el.textContent = "";
+      for(let i=0;i<text.length;i++){
+        el.textContent += text[i];
+        // add slight pause on newlines
+        if(text[i] === "\\n") await sleep(speed*6);
+        await sleep(speed);
+      }
+    }
+
+    // Sequentially reveal cards with a gentle pop
+    async function revealCards(){
+      cardsContainer.innerHTML = "";
+      cardsContainer.setAttribute('aria-hidden','false');
+      for(let i=0;i<notes.length;i++){
+        const c = document.createElement('div');
+        c.className = 'card';
+        c.innerHTML = '<div style="display:flex;align-items:center;gap:8px"><div class="emoji">'+notes[i].e+'</div><p>'+notes[i].t+'</p></div>';
+        cardsContainer.appendChild(c);
+        // force layout then add show
+        void c.offsetWidth;
+        c.classList.add('show');
+        await sleep(380);
+      }
+    }
+
+    // Floating heart particles (on press)
+    function spawnFloatingHearts(count=120){
+      const bounds = floatLayer.getBoundingClientRect();
+      for(let i=0;i<count;i++){
+        const h = document.createElement('div');
+        h.className = 'float-heart';
+        const size = 8 + Math.random()*16;
+        h
